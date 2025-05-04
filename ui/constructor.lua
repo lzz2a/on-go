@@ -22,6 +22,7 @@ function Constructor:_setup()
 
     self._window = window;
     include("ui/tabs/ball")(self);
+    include("ui/tabs/physics")(self);
 end
 
 

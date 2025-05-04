@@ -12,10 +12,10 @@ check("tobiware")
 check("tobiware/ui");
 check("tobiware/features");
 
-if not getgenv().debugMode then
-    local ui_files = {"constructor.lua","handler.lua", "settings.lua"}
-    local features_files = {"mags.lua", "dynamic_jump.lua"};
+local ui_files = {"constructor.lua", "settings.lua"}
+local features_files = {"mags.lua", "ladder_boost.lua"};
 
+if not getgenv().debugMode then
     for i,v in pairs(ui_files) do
         local path = `tobiware/ui/{v}`
         writefile(path, game:HttpGet(`{ui}/{v}`))
@@ -27,9 +27,33 @@ if not getgenv().debugMode then
     end 
 end
 
-
 getgenv().include = function(path)
-    return loadfile(`tobiware/{path}.lua`)();
+	local fullPath = `tobiware/{path}.lua`;
+
+	if not isfile(fullPath) then
+		warn("[include] File not found:", fullPath);
+		return;
+	end
+
+	local source = readfile(fullPath);
+	local chunk, loadErr = loadstring(source, "@" .. fullPath);
+
+	if not chunk then
+		warn("[include] Load error in", path, ":", loadErr);
+		return;
+	end
+
+	local success, result = pcall(chunk)
+
+	if not success then
+		warn("[include] Runtime error in", path, ":", result);
+		return;
+	end
+
+	return result;
 end
 
+
 local ui = include("ui/constructor").new();
+local magsFeature = include("features/mags")(ui.Settings);
+
