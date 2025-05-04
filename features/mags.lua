@@ -28,9 +28,7 @@ return function(settings)
         local client = game:GetService("Players").LocalPlayer;
         local character = client.Character;
 
-        if character then
-            print("Attempting");
-            
+        if character then            
             local leftArm = character:FindFirstChild("CatchLeft");
             local rightArm = character:FindFirstChild("CatchRight");
             
@@ -56,7 +54,6 @@ return function(settings)
 
                 table.clear(connections);
                 using = false;
-                warn("Terminated");
             end
 
             local function update()

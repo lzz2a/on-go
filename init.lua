@@ -1,5 +1,6 @@
 local repo = "https://raw.githubusercontent.com/lzz2a/on-go/refs/heads/main/tobiware.lua";
 local ui = repo .. "/ui";
+local clases = repo .. "/classes";
 local features = repo .. "/features";
 
 local function check(path)
@@ -10,12 +11,19 @@ end
 
 check("tobiware")
 check("tobiware/ui");
+check("tobiware/classes");
 check("tobiware/features");
 
+local classes_files = {"collisiongroup.lua"}
 local ui_files = {"constructor.lua", "settings.lua"}
 local features_files = {"mags.lua", "ladder_boost.lua"};
 
 if not getgenv().debugMode then
+    for i,v in pairs(classes_files) do
+        local path = `tobiware/classes/{v}`
+        writefile(path, game:HttpGet(`{classes}/{v}`))
+    end
+
     for i,v in pairs(ui_files) do
         local path = `tobiware/ui/{v}`
         writefile(path, game:HttpGet(`{ui}/{v}`))
@@ -55,5 +63,6 @@ end
 
 
 local ui = include("ui/constructor").new();
-local magsFeature = include("features/mags")(ui.Settings);
+local mags = include("features/mags")(ui.Settings);
+local ladder_boost = include("features/ladder_boost")(ui.Settings);
 
