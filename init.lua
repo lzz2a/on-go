@@ -1,5 +1,7 @@
-local repo = "https://raw.githubusercontent.com/lzz2a/on-go/refs/heads/main/tobiware.lua";
+local repo = "https://raw.githubusercontent.com/lzz2a/on-go/refs/heads/main";
 local ui = repo .. "/ui";
+local tabs = ui .. "/tabs"
+
 local classes = repo .. "/classes";
 local features = repo .. "/features";
 
@@ -11,11 +13,13 @@ end
 
 check("tobiware")
 check("tobiware/ui");
+check("tobiware/ui/tabs")
 check("tobiware/classes");
 check("tobiware/features");
 
 local classes_files = {"collisiongroup.lua"}
 local ui_files = {"constructor.lua", "settings.lua"}
+local tabs_files = {"ball.lua", "physics.lua"}
 local features_files = {"mags.lua", "ladder_boost.lua"};
 
 if not getgenv().debugMode then
@@ -27,6 +31,11 @@ if not getgenv().debugMode then
     for i,v in pairs(ui_files) do
         local path = `tobiware/ui/{v}`
         writefile(path, game:HttpGet(`{ui}/{v}`))
+    end 
+
+    for i,v in pairs(tabs_files) do
+        local path = `tobiware/ui/tabs/{v}`
+        writefile(path, game:HttpGet(`{tabs}/{v}`))
     end 
 
     for i,v in pairs(features_files) do
