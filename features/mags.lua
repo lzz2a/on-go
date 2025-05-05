@@ -10,7 +10,7 @@ return function(settings)
 
     local function magStatusGood()
         local replicatedStorage = game:GetService("ReplicatedStorage");
-        local values = replicatedStorage:WaitForChild("Flags");
+        local values = replicatedStorage:FindFirstChild("Flags");
 
         if values then
             local fumbleValue = values:FindFirstChild("Fumble");

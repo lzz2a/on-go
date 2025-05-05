@@ -1,5 +1,5 @@
 return {
-    VERSION = "Wsg Bro";
+    VERSION = "fixed practice game";
     UI_KEYBIND = Enum.KeyCode.RightControl,
     UI_AUTOSHOW = true;
 
