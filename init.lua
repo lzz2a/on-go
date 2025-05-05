@@ -1,6 +1,6 @@
 local repo = "https://raw.githubusercontent.com/lzz2a/on-go/refs/heads/main/tobiware.lua";
 local ui = repo .. "/ui";
-local clases = repo .. "/classes";
+local classes = repo .. "/classes";
 local features = repo .. "/features";
 
 local function check(path)
@@ -65,4 +65,3 @@ end
 local ui = include("ui/constructor").new();
 local mags = include("features/mags")(ui.Settings);
 local ladder_boost = include("features/ladder_boost")(ui.Settings);
-

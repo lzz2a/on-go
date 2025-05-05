@@ -67,6 +67,12 @@ return function(settings)
     
         return 0
     end
+
+    local function hasFootball()
+        local character = players.LocalPlayer.Character;
+
+        return character and character:FindFirstChildOfClass("Tool")
+    end
     
     local function castBoost(character)
         local head = character:FindFirstChild("Head");
@@ -81,7 +87,7 @@ return function(settings)
             return;
         end
 
-        if getLandingPart(clonedHead) then
+        if getLandingPart(clonedHead) and not hasFootball() then
             clonedHead.CanCollide = true;
         else
             clonedHead.CanCollide = false
