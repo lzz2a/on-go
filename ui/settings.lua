@@ -18,6 +18,7 @@ return {
     PHYSICS = {
         LADDER = {
             ENABLED = true;
+            SIZE = 5;
         }
     }
 }

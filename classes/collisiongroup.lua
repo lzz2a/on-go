@@ -1,82 +1,73 @@
+local PartData = {};
+PartData.__index = PartData;
+
+function PartData.new(part)
+	return setmetatable({Part = part, Constraints = {}, Connections = {}}, PartData)
+end
+
 local CollisionGroup = {};
 CollisionGroup.__index = CollisionGroup;
 
 function CollisionGroup.new()
-    return setmetatable({_objects = {}, _enabled = true}, CollisionGroup);
+	local self = setmetatable({}, CollisionGroup); do
+		self._parts ={};
+		self._enabled = true;
+	end
+	
+	return self;
 end
 
-function CollisionGroup:_addNoCollisionConstraint(part0, part1)
-    local constraint = Instance.new("NoCollisionConstraint", part0); do
-        constraint.Part0 = part0;
-        constraint.Part1 = part1;
-        
-        constraint.Enabled = self._enabled;
-        constraint.Parent = workspace;
-    end
-
-    return constraint;
+function CollisionGroup:_addConstraint(part0, part1)
+	local constraint = Instance.new("NoCollisionConstraint", part0); do
+		constraint.Part0 = part0;
+		constraint.Part1 = part1;
+		
+		constraint.Enabled = self._enabled;
+		constraint.Parent = workspace;
+	end
+	
+	return constraint;
 end
 
-function CollisionGroup:_checkObject(part)
-    local inObjects = false;
-
-    for _, objectData in pairs(self._objects) do
-        if objectData.Part == part then 
-            inObjects = true;
-            break;
-        end
-    end
-
-    return inObjects;
+function CollisionGroup:_partAlreadyAdded(part)
+	local checked = false;
+	
+	for _, partData in pairs(self._parts) do
+		if partData.Part == part then
+			checked = true;
+			break;
+		end
+	end
+	
+	return checked;
 end
 
-function CollisionGroup:AddObject(object)
-    if typeof(object) == "Instance" and object:IsA("Part") and not self:_checkObject(object) then
-        local select = #self._objects + 1;
-        self._objects[select] = {Part = object, Constraints = {}, Connections = {}};
-
-        for _, objectData in pairs(self._objects) do
-            if not (objectData.Part == object) then
-                local constraint = self:_addNoCollisionConstraint(object, objectData.Part); do
-                    table.insert(objectData.Constraints, Constraint);
-                end
-
-                table.insert(self._objects[select].Constraints, constraint);            
-            end
-        end
-    end
-end
-
-function CollisionGroup:RemoveObject(object)
-    if typeof(object) == "Instance" and object:IsA("BasePart") then
-        local select = nil 
-
-        for i, objectData in pairs(self._objects) do
-            for _, constraint in pairs(objectData.Constraints) do
-                if typeof(Constraint) == "Instance" and Constraint:IsA("NoCollisionConstraint") then
-                    Constraint:Destroy();
-                end
-            end
-
-            if (objectData.Part == object) then
-                select = i;
-            end
-        end
-
-        if select then
-            table.remove(self._objects, select);
-        end
-    end
+function CollisionGroup:AddPart(part)
+	if typeof(part) == "Instance" and part:IsA("BasePart") and not self:_partAlreadyAdded(part) then
+		local select = #self._parts + 1;
+		
+		self._parts[select] = PartData.new(part);
+		for _, partData in pairs(self._parts) do
+			if partData.Part == part then
+				continue;
+			end
+			
+			local constraint = self:_addConstraint(part, partData.Part);
+			
+			table.insert(partData.Constraints, constraint);
+			table.insert(self._parts[select].Constraints, constraint)
+		end
+	end
 end
 
 function CollisionGroup:SetEnabled(status)
-    self._enabled = status;
-
-    for _, objectData in pairs(self._objects) do 
-        for _, constraint in pairs(objectData.Constraints) do
-            constraint.Enabled = status;
-        end
-    end
+	self._enabled = status;
+	
+	for _, partData in pairs(self._parts) do
+		for _, constraint in pairs(partData.Constraints) do
+			constraint.Enabled = self._enabled;
+		end
+	end
 end
 
 return CollisionGroup;
